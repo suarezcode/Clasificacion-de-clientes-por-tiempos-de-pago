@@ -340,23 +340,24 @@ Figura 14. Árbol de Clasificación data_prueba
 <div align="center">
 <img width="80%" src="./doc/source/images/Imagen28.png" alt='28'>
 </div>
+
 Figura 15. Gráfica Árbol de Clasificación data_prueba
 
-
-Figura 16. Nivel de Error Árbol de Clasificación data_prueba
 <div align="center">
 <img width="80%" src="./doc/source/images/Imagen29.png" alt='29'>
 </div>
 
+Figura 16. Nivel de Error Árbol de Clasificación data_prueba
+
 <div align="center">
 <img width="80%" src="./doc/source/images/Imagen30.png" alt='30'>
-</div
+</div>
 
 Figura 17. Matriz de Confusión
 
 <div align="center">
 <img width="80%" src="./doc/source/images/Imagen31.png" alt='31'>
-</div
+</div>
 
 Figura 18.  Prueba de Efectividad
 
