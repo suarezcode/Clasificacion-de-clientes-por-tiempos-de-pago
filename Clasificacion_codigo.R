@@ -1,18 +1,48 @@
-##########CONEXIÓN A BASE DE DATOS##############
-library(RODBC);
-conexion_repositorio<- odbcDriverConnect('driver={SQL Server};
-                                         server=dlyserver;
-                                         database=datamart_cobranzas_sql;
-                                         trusted_connection=true');
-########### CONSULTA PRIMARIA DE DATOS##############
-options(scipen=999)
-consulta_repositorio<- sqlQuery(conexion_repositorio,paste0("SELECT PAGO_ID, PAGO_FECHA, PAGO_MONTO, FACTURA_ASOCIADA, FACTURA_FECHA, CODIGO_CLIENTE, NOMBRE_CLIENTE, CODIGO_VENDEDOR, NOMBRE_VENDEDOR, DIAS_DE_COBRO  FROM dbo.REGISTRO_PAGOS  WHERE FACTURA_FECHA >= '01/04/2019' AND ANULADO_COBRANZA = 0 AND ANULADO_POSTEO = 0 AND REVERSADO_COBRANZA = '' AND REVERSADO_POSTEO = '' AND DIAS_DE_COBRO >0  ")) ;
-odbcClose(conexion_repositorio);
-View(consulta_repositorio);
 
-########### PRIMERA CLASIFICACIÓN GENERAL DE PAGOS###########
+####INSTALACIÓN Y CARGA DE PAQUETES####
+
+#En esta sección se pueden instalar los paquetes requeridos descomentando las líneas##
+
+#install.packages("RODBC");
+#install.packages("dplyr");
+#install.packages("rpart");
+#install.packages("rpart.plot");
+#install.packages("rpart");
+#install.packages("readxl");
+
+library(RODBC);
+library(readxl);
 library(dplyr);
 library(rpart);
+library(rpart.plot);
+options(scipen=999)
+
+##########CONEXIÓN A BASE DE DATOS##############
+
+#En esta sección puedes conectarte a una base de datos si trabajas con algun repositorio similar al de el proyecto descomentando las líneas###
+
+#conexion_repositorio<- odbcDriverConnect('driver={SQL Server};
+#                                         server=dlyserver;
+#                                         database=datamart_cobranzas_sql;
+#                                         trusted_connection=true');
+########### CONSULTA PRIMARIA DE DATOS##############
+
+#En esta sección se obtienen los datos primarios, puedeas hacerlo desde una base de datos descomentando el código#
+
+#consulta_repositorio<- sqlQuery(conexion_repositorio,paste0("SELECT PAGO_ID, PAGO_FECHA, PAGO_MONTO, FACTURA_ASOCIADA, FACTURA_FECHA, CODIGO_CLIENTE, NOMBRE_CLIENTE, CODIGO_VENDEDOR, NOMBRE_VENDEDOR, DIAS_DE_COBRO  FROM dbo.REGISTRO_PAGOS  WHERE FACTURA_FECHA >= '01/04/2019' AND ANULADO_COBRANZA = 0 AND ANULADO_POSTEO = 0 AND REVERSADO_COBRANZA = '' AND REVERSADO_POSTEO = '' AND DIAS_DE_COBRO >0  ")) ;
+#odbcClose(conexion_repositorio);
+#View(consulta_repositorio);#
+
+
+#También puedes obtener los datos desde la hoja de excel que te dejo en el repositorio del proyecto##
+consulta_repositorio <- read_excel("C:/Users/user/Desktop/pagos mantis.xlsx");
+View(consulta_repositorio);
+
+
+
+
+########### PRIMERA CLASIFICACIÓN GENERAL DE PAGOS###########
+
 agrupamiento<- group_by_all(consulta_repositorio[,c(6:10)]);
 clasificacion<- agrupamiento;
 clasificacion$GRUPO <- ifelse(clasificacion$DIAS_DE_COBRO <= 5, "5 dias"
@@ -118,7 +148,7 @@ View(data_entrenamiento);
 View(data_prueba);
 modelo_entrenamiento<- rpart(TIPO_CLIENTE~.,method = "class", data = data_entrenamiento)
 print(modelo_entrenamiento)
-library(rpart.plot);
+
 rpart.plot(modelo_entrenamiento);
 
 
@@ -132,91 +162,3 @@ table(prueba_modelo, data_prueba$TIPO_CLIENTE);
 ######ESTADÍSTICA DEL MODELO######
 (sum(prueba_modelo==data_prueba$TIPO_CLIENTE)/length(data_prueba$TIPO_CLIENTE))*100
 
-#####ITERACIONES CON CLIENTES######
-#####ITERACION I######
-##########CONEXIÓN A BASE DE DATOS##############
-library(RODBC);
-conexion_repositorio<- odbcDriverConnect('driver={SQL Server};
-                                         server=dlyserver;
-                                         database=datamart_cobranzas_sql;
-                                         trusted_connection=true');
-library(dplyr);
-library(rpart);
-########### CONSULTA PRIMARIA DE DATOS##############
-###########CLIENTE 1##########
-consulta_repositorio1<- sqlQuery(conexion_repositorio,paste0("SELECT * FROM dbo.REGISTRO_PAGOS WHERE CODIGO_CLIENTE = 'J410326751' "));
-View(consulta_repositorio1);
-agrupamiento1<- group_by_all(consulta_repositorio1[c(1:10),c(6:10)]);
-View(agrupamiento1);
-###########CLIENTE 2##########
-consulta_repositorio2<- sqlQuery(conexion_repositorio,paste0("SELECT * FROM dbo.REGISTRO_PAGOS WHERE CODIGO_CLIENTE = 'J298220511' "));
-View(consulta_repositorio2);
-agrupamiento2<- group_by_all(consulta_repositorio2[c(8:18),c(6:10)]);
-View(agrupamiento2);
-###########CLIENTE 3##########
-consulta_repositorio3<- sqlQuery(conexion_repositorio,paste0("SELECT * FROM dbo.REGISTRO_PAGOS WHERE CODIGO_CLIENTE = 'J295734514' "));
-View(consulta_repositorio3);
-agrupamiento3<- group_by_all(consulta_repositorio3[c(15:25),c(6:10)]);
-View(agrupamiento3);
-agrupamiento<-rbind.data.frame(agrupamiento1,agrupamiento2, agrupamiento3);
-View(agrupamiento);
-odbcClose(conexion_repositorio);
-
-#####ITERACION II######
-##########CONEXIÓN A BASE DE DATOS##############
-library(RODBC);
-conexion_repositorio<- odbcDriverConnect('driver={SQL Server};
-                                         server=dlyserver;
-                                         database=datamart_cobranzas_sql;
-                                         trusted_connection=true');
-library(dplyr);
-library(rpart);
-########### CONSULTA PRIMARIA DE DATOS##############
-###########CLIENTE 1##########
-consulta_repositorio1<- sqlQuery(conexion_repositorio,paste0("SELECT * FROM dbo.REGISTRO_PAGOS WHERE CODIGO_CLIENTE = 'J095149668' "));
-View(consulta_repositorio1);
-agrupamiento1<- group_by_all(consulta_repositorio1[c(22:32),c(6:10)]);
-View(agrupamiento1);
-###########CLIENTE 2##########
-consulta_repositorio2<- sqlQuery(conexion_repositorio,paste0("SELECT * FROM dbo.REGISTRO_PAGOS WHERE CODIGO_CLIENTE = 'J304240996' "));
-View(consulta_repositorio2);
-agrupamiento2<- group_by_all(consulta_repositorio2[c(14:24),c(6:10)]);
-View(agrupamiento2);
-###########CLIENTE 3##########
-consulta_repositorio3<- sqlQuery(conexion_repositorio,paste0("SELECT * FROM dbo.REGISTRO_PAGOS WHERE CODIGO_CLIENTE = 'J304788410' "));
-View(consulta_repositorio3);
-agrupamiento3<- group_by_all(consulta_repositorio3[c(27:37),c(6:10)]);
-View(agrupamiento3);
-agrupamiento<-rbind.data.frame(agrupamiento1,agrupamiento2, agrupamiento3);
-View(agrupamiento);
-odbcClose(conexion_repositorio);
-
-
-#####ITERACION III######
-##########CONEXIÓN A BASE DE DATOS##############
-library(RODBC);
-conexion_repositorio<- odbcDriverConnect('driver={SQL Server};
-                                         server=dlyserver;
-                                         database=datamart_cobranzas_sql;
-                                         trusted_connection=true');
-library(dplyr);
-library(rpart);
-########### CONSULTA PRIMARIA DE DATOS##############
-###########CLIENTE 1##########
-consulta_repositorio1<- sqlQuery(conexion_repositorio,paste0("SELECT * FROM dbo.REGISTRO_PAGOS WHERE CODIGO_CLIENTE = 'J296800588' "));
-View(consulta_repositorio1);
-agrupamiento1<- group_by_all(consulta_repositorio1[c(3:13),c(6:10)]);
-View(agrupamiento1);
-###########CLIENTE 2##########
-consulta_repositorio2<- sqlQuery(conexion_repositorio,paste0("SELECT * FROM dbo.REGISTRO_PAGOS WHERE CODIGO_CLIENTE = 'J402449445' "));
-View(consulta_repositorio2);
-agrupamiento2<- group_by_all(consulta_repositorio2[c(2:12),c(6:10)]);
-View(agrupamiento2);
-###########CLIENTE 3##########
-consulta_repositorio3<- sqlQuery(conexion_repositorio,paste0("SELECT * FROM dbo.REGISTRO_PAGOS WHERE CODIGO_CLIENTE = 'J400783470' "));
-View(consulta_repositorio3);
-agrupamiento3<- group_by_all(consulta_repositorio3[c(62:72),c(6:10)]);
-View(agrupamiento3);
-agrupamiento<-rbind.data.frame(agrupamiento1,agrupamiento2, agrupamiento3);
-View(agrupamiento);
-odbcClose(conexion_repositorio);
